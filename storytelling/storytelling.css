@@ -1,0 +1,66 @@
+/* CSS declarations go here */
+
+#top-setting, #main-pane, #side-pane, #bottom-pane {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+
+#top-setting {
+    height: 100px;
+    overflow: auto;
+}
+
+
+#side-pane {
+	top: 60px;
+    width: 20%;
+    left: auto;
+    overflow: auto;
+   
+}
+
+
+#main-pane {
+    top: 60px;
+    left: 0;
+    right: 20%;
+    overflow: auto;
+}
+
+
+.mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    
+    top: 0px;
+    left: 0px;
+    background-color: #000000;
+    opacity: .4;
+    z-index: 1;
+}
+
+/*
+.story:hover {
+   color: #606060; 
+  font-weight: bold; 
+  background-color: #FFFF00;
+}
+*/
+.story_image{
+		
+}
+
+.scene_image:hover{
+    background-color: #FF0000;
+    opacity: .4;
+    z-index: 1;
+}
+
+
+

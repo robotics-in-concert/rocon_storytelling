@@ -1,0 +1,169 @@
+<head>
+  <title>Storytelling</title>
+</head>
+
+<body>
+  {{> index_page}}
+</body>
+
+<template name="index_page">
+	{{#if is_main}}
+		{{> main_page}}
+	{{/if}}
+	{{#if is_test}}
+		{{> test_page}}
+	{{/if}}
+</template>
+
+
+<template name="main_page">
+	
+	<div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+        <div class="nav-collapse collapse" style="height: 0px;">
+      			{{#if selected}}
+				{{> settingborad}}
+				{{/if}}
+       
+        </div>
+          
+		 </div>
+      </div>
+    </div>
+    <div style = "height:50px"></div>
+    
+   	<div class="container">
+		<div class='row'>
+			<div class='span9'>
+				{{#if selected}}
+					 {{> sceneboard}}
+				{{/if}}
+			</div>
+				
+			<div class='span3 bs-docs-sidebar'>
+				<ul class="nav nav-list bs-docs-sidenav affix-top">
+					{{> storyboard}}
+					{{> launchboard}}		
+				</ul>
+			</div>
+		</div>
+		<hr>
+		<footer>
+        <p>© YujinRobot 2014</p>
+       </footer>
+	</div>
+	
+	{{#if showSetSceneDialog}}
+		{{> showSetSceneDialog}}
+	{{/if}}	
+</template>
+
+<template name="storyboard">
+	<h1>Story List</h1>
+	<div id="lists">
+	  {{#each stories}}
+	      <div class = "story">
+	  	  	<button class="btn btn-block btn-large ">{{story_name}}</button>
+	  	  </div>
+	  {{/each}}
+	</div> 
+</template>
+
+
+<template name="settingborad" >
+	<div class="input-prepend">
+		  <span class="add-on">Story Name</span>
+		  <input class="input-small sta-story_name" id="prependedInput" type="text" placeholder={{story_name}} value = "{{story_name}}">
+		  <span class="add-on">Master IP</span>
+		  <input class="input-medium sta-master_ip" id="prependedInput" type="text" placeholder={{master_ip}} value = "{{master_ip}}">
+		  <span class="add-on">Robot Type</span>
+		  <input class="input-small sta-robot_type" id="prependedInput" type="text" placeholder={{robot_type}} value = {{robot_type}}>
+		  <button class="btn btn-primary sta-save-setting" type="button">save</button>
+	</div>
+</template>
+
+<template name="sceneboard" >
+	<h1>Scenes</h1>
+	<div class="row">
+		{{#each scenes}}
+			<div class="span3">
+				<img class= "scene_image img-responsive img-polaroid"src="{{image}}" >
+			</div>
+	 	{{/each}}
+	</div>
+</template>
+
+<template name = "launchboard">
+ 	
+ 	 <div class="jumbotron">
+        <h3>Launch Info.</h3>
+        <p>Story Name: <b>{{story_name}}</b></p>
+        <p>Master IP: <b>{{master_ip}}</b></p>
+        <p>Robot Type: <b>{{robot_type}}</b></p>
+    </div>
+     
+	 <button class="btn btn-primary sta-export">Export</button>
+	 <button class="btn btn-primary sta-execution" >Execution</button>
+	
+</template>
+
+<template name = "showSetSceneDialog">
+
+	<div class="mask"></div>
+	<div class="modal">
+	<div class="modal-header">
+		<button type="button" class="close cancel">&times;</button>
+		<h3>Scene Settings</h3>
+	</div>
+
+	<div class="modal-body">
+		<h4>Scene</h4>
+		<img class="{{story_name}}_{{scene_id}} img-responsive"  src="{{image}}" >
+		<h4>Action</h4>
+		
+		<ul class="nav nav-tabs" id="action_tabs">
+			{{#each actions}}
+				<li><a href="#{{action_id}}" data-toggle="tab">action {{action_id}}</a></li>
+			{{/each}}
+		</ul>
+
+		<div class="tab-content">
+			{{#each actions}}
+				<div class="tab-pane" id="{{action_id}}">
+					<button type="button" class="close delete">&times;</button>
+					<label>Motion: </label>
+					<input type="text" value={{motion}} class="{{_id}}_motion"> 
+					<label>Face: </label>
+					<input type="text" value={{face}} class="{{_id}}_face"> 
+					<label>TTS: </label>
+					<input type="text" value={{tts}} class="{{_id}}_tts">
+				</div>
+			{{/each}}
+		</div>
+		
+	</div>
+
+	<div class="modal-footer">
+			<a href="#" class="btn cancel">Cancel</a> 
+			<a href="#" class="btn btn-primary ok">OK</a>
+			<a href="#" class="btn btn-primary add" style="float:left;">Add</a>
+	</div>
+	</div>
+</template>
+
+<template name="test_page">
+
+  <h4>test page</h4>
+  <input class = "sta-export" type="button" value = "Export"/></p>
+  <input class = "sta-get" type="button" value = "GET"/></p>
+  <a href="http://192.168.10.128:3000/export/example/{{exec_path}}" target="_blank">Link</a>
+  <p/>
+  
+  {{#each robots}}
+		robot name: <p>{{robot_name}}</p>
+		motiony list: <p>{{motion_list}}</p>
+  {{/each}}
+  
+</template>
+

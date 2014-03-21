@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="css/flexslider.css" type="text/css" media="screen" />
+
+<script type="text/javascript" src="js/jquery.js"></script> 
+<script type="text/javascript" src="js/eventemitter2.js"></script> 
+<script type="text/javascript" src="js/roslib.js"></script> 
+<script type="text/javascript" src="js/jquery.flexslider.js"></script>
+<script type="text/javascript" type="text/javascript">
+    var StatusCode = {
+    		GENERAL_ERROR: -2,
+    		PLAYBACK_ERROR: -1,
+    		IDLING: 1,
+    		PLAYBACK: 2,
+    		PLAYBACK_FINISHED: 3
+    };
+    var ros = new ROSLIB.Ros();
+
+    /*setting info publish topic name*/
+    var motion_pub_topic = "/motion_playback";
+    var face_pub_topic = "/face";
+    var tts_pub_topic = "/tts";
+    
+    /*setting info publish topic type*/
+    var motion_pub_topic_type = "motion_retargeting_msgs/MotionPlayback";
+    var face_pub_topic_type = "std_msgs/String";
+    var tts_pub_topic_type = "std_msgs/String";
+    
+    /*setting info subscriber topic name*/
+    var response_sub_topic = "/response";
+    var motion_response_sub_topic = "/playback_status";
+    
+    /*setting info publish topic type*/
+    var response_sub_topic_type = "std_msgs/String";
+    var motion_response_sub_topic_type = "motion_retargeting_msgs/PlaybackStatus";
+    
+    /*setting info subscriber topic type*/
+    var response_listener;
+    var motion_publisher;
+    var face_publisher;
+    var tts_publisher;
+    
+    var motion_res_flag = false;
+    var face_res_flag = false;
+    var tts_res_flag = false;
+    
+    var check_scene_status_timer
+    var check_action_status_timer
+    var request_flag;
+    var response_flag;
+    var scene_status = 'IDLE' /*{'IDLE', 'PLAYING', 'PAUSE_SCENE', 'RESUME_SCENE', 'END_PLAY' }*/
+    var action_status = 'IDLE' /*{'IDLE', 'WAITING_RESPONSE', 'PAUSE_ACTION', 'RESUME_ACTION', 'ALL_RECEIVED' }*/
+    var current_scene_id = 0
+    var current_action_id = 0
+    /*setting info*/
+    var defaultUrL = "ws://"+"%(MASTER_IP)";
+    $().ready(function(e){
+      console.log("$().ready");
+      settingROSCallbacks();
+      ros.connect(defaultUrL);
+      
+      $('.start_story').click(function(){
+        	console.log(' start  ');
+        	start_story();
+        });
+      $('.pause_story').click(function(){
+      		console.log(' pause  ');
+        });
+      $('.resume_story').click(function(){
+      		console.log(' resume  ');
+      	
+        });
+      $('.stop_story').click(function(){
+    		console.log(' stop  ');
+    		clearInterval(check_scene_status_timer);
+    		clearInterval(check_action_status_timer);
+    		check_action_status_timer = 0
+    		check_scene_status_timer = 0
+    		scene_status = 'IDLE';
+    		action_status = 'IDLE';
+    	});
+    });
+   
+ 
+    
+    function settingROSCallbacks(){  	
+        ros.on('connection',function(){
+        	console.log("ROS Connected");
+    		setup_pub_sub();    
+	    });
+	    ros.on('error',function(e) {
+	      console.log("ROS Error!",e);
+	    });
+	    ros.on('close',function() {
+	      console.log("ROS onnection Close!");
+	    });
+    }
+    
+    function setup_pub_sub() {
+    	/*subscriber*/
+    	response_listener = new ROSLIB.Topic({
+	          ros : ros,
+	        	name : response_sub_topic,
+	        	messageType: response_sub_topic_type
+	        	});    
+      	response_listener.subscribe(response_listen);
+      	
+      	/*subscriber*/
+    	motion_response_listener = new ROSLIB.Topic({
+	          ros : ros,
+	        	name : motion_response_sub_topic,
+	        	messageType: motion_response_sub_topic_type
+	        	});    
+    	motion_response_listener.subscribe(motion_response_listen);
+    	
+    	/*publisher*/
+      motion_publisher = new ROSLIB.Topic({
+      	ros : ros,
+      	name : motion_pub_topic,
+      	messageType: motion_pub_topic_type
+        });
+      var init_motion = new ROSLIB.Message({
+    	  start_playback: true,
+    	  motion_name: "HELLO"
+        });
+      motion_publisher.publish(init_motion);
+      
+      face_publisher = new ROSLIB.Topic({
+      	ros : ros,
+      	name : face_pub_topic,
+      	messageType: "std_msgs/String"
+        });
+      var init_face = new ROSLIB.Message({
+      	  data: "SMILE",
+        });
+      //face_publisher.publish(init_face);
+      
+      tts_publisher = new ROSLIB.Topic({
+      	ros : ros,
+      	name : tts_pub_topic,
+      	messageType: "std_msgs/String"
+        });
+      var init_tts = new ROSLIB.Message({
+      	  data: "hello world",
+        });
+      //tts_publisher.publish(init_tts);
+    }
+    
+    
+    function motion_response_listen(msg) {
+    	if (msg.status_code.value === StatusCode.IDLING){
+    		console.log("IDLING");
+    	}
+    	else if(msg.status_code.value === StatusCode.PLAYBACK){
+    		console.log("PLAYBACK");
+    	}
+		else if(msg.status_code.value === StatusCode.PLAYBACK_FINISHED){
+			motion_res_flag = true;
+			console.log("PLAYBACK_FINISHED");
+    	}
+		else{
+			console.log("UNKNOWN ERROR");	
+		}
+ 	};
+ 	
+    
+   function response_listen(msg) {
+	   if (msg.data.indexOf("tts_response")!== -1){
+		   tts_res_flag = true;
+	   }
+	   else if (msg.data.indexOf("face_response")!== -1){
+		   face_res_flag = true;
+	   }
+	   else{
+		   console.log("receive Unknown response");
+	   }
+	};
+    
+   function check_receive_all_response(){
+	   return motion_res_flag && tts_res_flag && face_res_flag;
+    };
+    function request_action(tts, motion, face){
+          var init_motion = new ROSLIB.Message({
+        	  start_playback: true,
+        	  motion_name: motion
+            });
+          motion_publisher.publish(init_motion);
+          
+	  	   motion_res_flag = false;
+	  	   var tts = new ROSLIB.Message({
+	  	     	  data: tts,
+	  	       });
+	  	   tts_publisher.publish(tts);
+	  	   tts_res_flag = false;
+	  	   var face = new ROSLIB.Message({
+	  	     	  data: face,
+	  	     	  
+	  	       });
+	  	   face_publisher.publish(face);
+	  	   face_res_flag = false;
+    };
+    
+    function start_story(){
+    	check_scene_status_timer = check_scene_status_timer || setInterval(check_scene_status, 500);
+     }
+    
+    function check_scene_status(){
+    	console.log('scene_status: '+scene_status)
+    	switch (scene_status) {
+	    	case "IDLE": 
+	    		play_scene(current_scene_id);
+	    		scene_status = "PLAYING"
+	    		break;
+	    	case "PLAYING":
+	    		break;
+	    	case "PAUSE_SCENE":break;
+	    	case "RESUME_SCENE":break;
+	    	case "NEXT_PLAY":
+	    		if (current_scene_id < scenes.length-1){
+	    			current_scene_id += 1;
+		    		scene_status = "IDLE";
+		    		$('.flexslider').flexslider("next");
+	    		}
+		    	else{
+		    		scene_status = "END_PLAY";
+		    	} 
+	    		break;
+	    	case "END_PLAY":
+	    		console.log("No more scene. end of the play");
+	    		current_scene_id = 0;
+	    		clearInterval(check_scene_status_timer);
+	    		check_scene_status_timer = 0;
+	    		$('.flexslider').flexslider(check_scene_status_timer);
+	    		scene_status = "IDLE"
+	    		break;
+    	}
+    };
+    
+    function play_scene(scene_id){
+    	console.log("play scene: "+ scene_id)
+    	check_action_status_timer = check_action_status_timer || setInterval(check_action_status, 500);
+    };
+    
+    function check_action_status(){
+    	console.log('action_status: '+action_status)
+    	switch (action_status) {
+	    	case "IDLE": 
+	    		console.log("scene_id: "+ current_scene_id+ " action_id: "+current_action_id);
+	    		var action = scenes[current_scene_id].actions[current_action_id];
+	    		console.log(action);
+	    		if (action === undefined){
+	    			action_status = "ALL_RECEIVED"; 
+		    		break;
+	    		}
+	    		console.log("tts: "+action.tts);
+	    		console.log("motion: "+action.motion);
+	    		console.log("face: "+action.face);
+	    		
+	    		request_action(action.tts,action.motion,action.face);
+	    		action_status = "WAITING_RESPONSE"; 
+	    		break;
+	    	case "WAITING_RESPONSE":
+	    		var ret = check_receive_all_response()
+	    		if(ret)
+	    			action_status = "ALL_RECEIVED";
+	    		break;
+	    	case "PAUSE_ACTION":break;
+	    	case "RESUME_ACTION":break;
+	    	case "ALL_RECEIVED":
+	    		action_status = "IDLE";
+	    		
+	    		if (current_action_id < scenes[current_scene_id].actions.length-1){
+	    			current_action_id += 1;
+	    		}
+	    		else{
+	    			scene_status = "NEXT_PLAY";
+	    			current_action_id = 0;
+		    		clearInterval(check_action_status_timer)
+		    		check_action_status_timer = 0;	
+	    		}
+	    		break;
+    	}
+    };
+
+	$(window).load(function(){
+	  console.log("$(window).load");
+      $('.flexslider').flexslider({
+        animation: "slide",
+        slideshow: false,
+        animationLoop: false,
+        slideshowSpeed: 1000,
+      });
+    });
+	
+	/*converting db*/
+	var scenes = %(SCENE_INFO)
+	console.log("scenes");
+	console.log(scenes);
+	
+	Scene = function(id, image){
+		this.scene_id=id;
+		this.image = image;
+		this.actions = []
+	}
+	Action = function(id, tts, face, motion){
+		this.action_id = id;
+		this.tts = tts;
+		this.face = face;
+		this.motion = motion;
+	}
+	
+</script>
+</head>
+</html>
+
+<html>
+</body>
+<h1>%(STORY_NAME) TEST</h1>
+<p class="start_story">start story</p>
+<p class="pause_story">pause story</p>
+<p class="resume_story">resume story</p>
+<p class="stop_story">stop story</p>
+
+<div class="flexslider">
+    <ul class="slides">
+       %(IMAGES_SRC_PATH)
+    </ul>
+</div>
+ 
+</body>
+</html>
+

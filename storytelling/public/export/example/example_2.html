@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="css/flexslider.css" type="text/css" media="screen" />
+
+<script type="text/javascript" src="js/jquery.js"></script> 
+<script type="text/javascript" src="js/eventemitter2.js"></script> 
+<script type="text/javascript" src="js/roslib.js"></script> 
+<script type="text/javascript" src="js/jquery.flexslider.js"></script> 
+
+<script type="text/javascript" type="text/javascript">
+    var ros = new ROSLIB.Ros();
+    var pub_topic = "/chatter";
+    var pub_topic_type = "std_msgs/String";
+    var defaultUrL = "ws://localhost"+":9090";
+
+    $().ready(function(e){
+      console.log("$().ready");
+      settingROSCallbacks();
+      ros.connect(defaultUrL);
+        function settingROSCallbacks(){
+            ros.on('connection',function(){
+            console.log("ROS Connected");
+            var listener = new ROSLIB.Topic({
+		        ros : ros,
+		        name : pub_topic,
+		        messageType: pub_topic_type
+		        });    
+		    listener.subscribe(listening);
+		    });
+		    ros.on('error',function(e) {
+		      console.log("ROS Error!",e);
+		    });
+		    ros.on('close',function() {
+		      console.log("ROS onnection Close!");
+		    });
+	    }
+    });
+	function listening(msg) {
+		console.debug(msg);
+	}
+	$(window).load(function() {
+	    console.log("$(window).load");
+      $('.flexslider').flexslider({
+        animation: "slide"
+      });
+    });
+</script>
+</head>
+
+<body>
+  <h1>ROS CONNECTION TEST</h1>
+    <div class="flexslider">
+        <ul class="slides">
+            <li><img src="images/prototype_scene_0.jpg" /></li>
+            <li><img src="images/prototype_scene_1.jpg" /></li>
+            <li><img src="images/prototype_scene_2.jpg" /></li>
+            <li><img src="images/prototype_scene_3.jpg" /></li>
+        </ul>
+    </div>
+</body>
+</html>
