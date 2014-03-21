@@ -3,7 +3,7 @@ rocon_storytelling
 
 Software for our storytelling tool
 
-### Meteor launch
+### Meteor launch and MR api Test
 
 First, install the meteor
 
@@ -33,9 +33,25 @@ I20140321-14:28:49.221(9)? make execution page: patrol.html
 ```
 Now, open the web browser(recommended chrome) and connect ``` http://localhost:3000/main ```
 
-If you want test of motion retargeting api, connect here. It is simple execution page.
+If you want test of motion retargeting api, need to rosbridge server.
+
+```
+roslaunch rosbridge_server rosbridge_websocket.launch --screen 
+
+```
+
+And then connect here. It is simple execution page.
 ```
 http://localhost:3000/export/example/test.html
 ```
-
+push the start story, check the rostopic list. And then you can see the following topic list
+```
+/face
+/motion_playback
+/playback_status
+/response
+/rosout
+/rosout_agg
+/tts
+```
 If you want see the web debug message, push the ```F12``` and go to the console tab.
