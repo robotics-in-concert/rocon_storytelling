@@ -42,7 +42,7 @@ roslaunch rosbridge_server rosbridge_websocket.launch --screen
 
 And then connect here. It is simple execution page.
 ```
-http://localhost:3000/export/example/test.html
+http://localhost:3000/export/example/test_motion_player.html
 ```
 push the start story, check the rostopic list. And then you can see the following topic list
 ```
