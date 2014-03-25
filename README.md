@@ -15,14 +15,14 @@ First, install the meteor
 And then, launch the story telling authoring server
 
 ```
-> cd <rocon_storytelling package>/storytelling
+> cd <rocon_storytelling package>/storytelling_web
 > meteor
 ```
 you can see follow message,
 
 
 ```
-[[[[[ ~/rocon/src/rocon_storytelling/storytelling ]]]]]
+[[[[[ ~/rocon/src/rocon_storytelling_web/storytelling_web ]]]]]
 
 => Meteor 0.7.2 is available. Update this project with 'meteor update'.
 => Meteor server running on: http://localhost:3000/
