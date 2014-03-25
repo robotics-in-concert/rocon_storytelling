@@ -55,3 +55,18 @@ push the start story, check the rostopic list. And then you can see the followin
 /tts
 ```
 If you want see the web debug message, push the ```F12``` and go to the console tab.
+
+### Simple Motion Player test
+
+
+1. launch the meteor and connect following page
+
+```
+http://localhost:3000/export/example/test_simple_motion_player.html
+```
+2. Copy and paste motion list and push the ```Play``` button 
+3. Check the log and open the debug console (using ```F12```)
+
+ 
+
+ 
