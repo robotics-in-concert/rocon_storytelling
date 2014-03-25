@@ -47,8 +47,8 @@ http://localhost:3000/export/example/test_motion_player.html
 push the start story, check the rostopic list. And then you can see the following topic list
 ```
 /face
-/motion_playback
-/playback_status
+/rocon_robosem/motion_player/motion_playback
+/rocon_robosem/motion_player/playback_status
 /response
 /rosout
 /rosout_agg
