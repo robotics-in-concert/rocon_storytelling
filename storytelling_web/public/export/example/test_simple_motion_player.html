@@ -55,11 +55,18 @@
     var current_scene_id = 0
     var current_action_id = 0
     /*setting info*/
-    var defaultUrL = "ws://"+"localhost:9090";
+    
+    var defaultUrL = "ws://"+"localhost"+":9090";
     $().ready(function(e){
-      console.log("$().ready");
-      settingROSCallbacks();
-      ros.connect(defaultUrL);
+      $('.sta-ros-connect').click(function(){
+            var robot_url = $(".sta-robot-ip").val();
+            defaultUrL = "ws://"+robot_url+":9090";
+            console.log("Ros connect: "+defaultUrL);
+            settingROSCallbacks();
+            ros.connect(defaultUrL);
+       });
+              
+      
       
       $('.start_story').click(function(){
         	console.log(' start  ');
@@ -88,7 +95,8 @@
     function settingROSCallbacks(){  	
         ros.on('connection',function(){
         	console.log("ROS Connected");
-    		setup_pub_sub();    
+    		setup_pub_sub();
+    		$('.sta-ros-connect').val('Connecting...').attr("disabled", "disabled");;
 	    });
 	    ros.on('error',function(e) {
 	      console.log("ROS Error!",e);
@@ -355,6 +363,10 @@
    <li>  robosem_motion_scared</li>
 
 <h1>prototype TEST</h1>
+<label>Robot IP: </label>
+<input class="sta-robot-ip" type="text" placeholder='Robot ip here' value = "localhost">
+<input class="sta-ros-connect" type="button" value = "Connect"/></p>
+</p>
 <label>Motion: </label>
 <input class="sta-motion-name" type="text" placeholder='Motion here' value = "">
 <input class="sta-play" type="button" value = "Play"/></p>

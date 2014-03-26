@@ -64,18 +64,18 @@
       settingROSCallbacks();
       ros.connect(defaultUrL);
       
-      $('.start_story').click(function(){
+      $('.sta-start-story').click(function(){
         	console.log(' start  ');
         	start_story();
         });
-      $('.pause_story').click(function(){
+      $('.sta-pause-story').click(function(){
       		console.log(' pause  ');
         });
-      $('.resume_story').click(function(){
+      $('.sta-resume-story').click(function(){
       		console.log(' resume  ');
       	
         });
-      $('.stop_story').click(function(){
+      $('.sta-stop-story').click(function(){
     		console.log(' stop  ');
     		clearInterval(check_scene_status_timer);
     		clearInterval(check_action_status_timer);
@@ -330,10 +330,10 @@
 <html>
 </body>
 <h1>%(STORY_NAME) TEST</h1>
-<button class="start_story">start story</button>
-<button class="pause_story">pause story</button>
-<button class="resume_story">resume story</button>
-<button class="stop_story">stop story</button>
+<button class="sta-start-story">Start story</button>
+<button class="sta-pause-story">Pause story</button>
+<button class="sta-resume-story">Resume story</button>
+<button class="sta-stop-story">Stop story</button>
 
 <div class="flexslider">
     <ul class="slides">
