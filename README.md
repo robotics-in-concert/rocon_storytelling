@@ -84,8 +84,9 @@ Next, download and insall the android app.
 ```
 http://files.yujinrobot.com/android/apks/sat_app_ver_1.0.apk
 ```
+launch the android app, and write your pc ip in the "Robot uri" box. ex) http://<your pc ip>:11311/
 
-Go to the test page, write the tts text and push the play button, sta app speeches your text.
-and the sta app display only image in image list.
+you check the "cento" image and then, go to the test page, write the tts text and push the play button, sta app speeches your text.
+Also, you can select the displayed image.but the sta app display only image in image list.
 
  
