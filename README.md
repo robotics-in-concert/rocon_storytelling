@@ -56,18 +56,36 @@ push the start story, check the rostopic list. And then you can see the followin
 ```
 If you want see the web debug message, push the ```F12``` and go to the console tab.
 
-### Simple Motion Player test
+### Simple test with Motion Player 
 
 
-First, launch the meteor and connect following page.
+First, launch the [robosem storytelling simulation](https://github.com/robotics-in-concert/rocon_storytelling/blob/hydro-devel/README.md)
+and then, launch the meteor and connect following page. 
 
 ```
 http://localhost:3000/export/example/test_simple_motion_player.html
 ```
-And then, Copy and paste motion list and push the ```Play``` button.
+Next, Copy and paste motion list and push the ```Play``` button.
 
-Finally, Check the log and open the debug console. (using ```F12```)
+Lastly, Check the log and open the debug console. (using ```F12```)
 
- 
+
+### Simple test with Android STA App
+
+First, launch the [robosem storytelling simulation](https://github.com/robotics-in-concert/rocon_storytelling/blob/hydro-devel/README.md)
+and then, launch the meteor and connect following page. 
+
+```
+http://localhost:3000/export/example/test_simple_motion_player.html
+```
+
+Next, download and insall the android app.
+
+```
+http://files.yujinrobot.com/android/apks/sat_app_ver_1.0.apk
+```
+
+Go to the test page, write the tts text and push the play button, sta app speeches your text.
+and the sta app display only image in image list.
 
  
