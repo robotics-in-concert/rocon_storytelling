@@ -8,6 +8,7 @@
 <script type="text/javascript" src="js/eventemitter2.js"></script> 
 <script type="text/javascript" src="js/roslib.js"></script> 
 <script type="text/javascript" src="js/jquery.flexslider.js"></script>
+<script type="text/javascript" src="js/base64.js"></script>
 <script type="text/javascript" type="text/javascript">
     var StatusCode = {
     		GENERAL_ERROR: -2,
@@ -20,8 +21,8 @@
 
     /*setting info publish topic name*/
     var motion_pub_topic = "/rocon_robosem/motion_player/motion_playback";
-    var face_pub_topic = "/face";
-    var tts_pub_topic = "/tts";
+    var face_pub_topic = "/sat_face";
+    var tts_pub_topic = "/sat_tts";
     
     /*setting info publish topic type*/
     var motion_pub_topic_type = "motion_retargeting_msgs/MotionPlayback";
@@ -29,11 +30,13 @@
     var tts_pub_topic_type = "std_msgs/String";
     
     /*setting info subscriber topic name*/
-    var response_sub_topic = "/response";
+    var tts_response_sub_topic = "/tts_response";
+    var face_response_sub_topic = "/face_response";
     var motion_response_sub_topic = "/rocon_robosem/motion_player/playback_status";
     
     /*setting info publish topic type*/
-    var response_sub_topic_type = "std_msgs/String";
+    var tts_response_sub_topic_type = "std_msgs/String";
+    var face_response_sub_topic_type = "std_msgs/String";
     var motion_response_sub_topic_type = "motion_retargeting_msgs/PlaybackStatus";
     
     /*setting info subscriber topic type*/
@@ -100,12 +103,20 @@
     
     function setup_pub_sub() {
     	/*subscriber*/
-    	response_listener = new ROSLIB.Topic({
+    	tts_response_listener = new ROSLIB.Topic({
 	          ros : ros,
-	        	name : response_sub_topic,
-	        	messageType: response_sub_topic_type
+	        	name : tts_response_sub_topic,
+	        	messageType: tts_response_sub_topic_type
 	        	});    
-      	response_listener.subscribe(response_listen);
+    	tts_response_listener.subscribe(tts_response_listen);
+      	
+      	/*subscriber*/
+    	face_response_listener = new ROSLIB.Topic({
+	          ros : ros,
+	        	name : face_response_sub_topic,
+	        	messageType: face_response_sub_topic_type
+	        	});    
+    	face_response_listener.subscribe(face_response_listen);
       	
       	/*subscriber*/
     	motion_response_listener = new ROSLIB.Topic({
@@ -121,62 +132,55 @@
       	name : motion_pub_topic,
       	messageType: motion_pub_topic_type
         });
-      var init_motion = new ROSLIB.Message({
-    	  start_playback: true,
-    	  motion_name: "HELLO"
-        });
-      motion_publisher.publish(init_motion);
+     
       
       face_publisher = new ROSLIB.Topic({
       	ros : ros,
       	name : face_pub_topic,
       	messageType: "std_msgs/String"
         });
-      var init_face = new ROSLIB.Message({
-      	  data: "SMILE",
-        });
-      //face_publisher.publish(init_face);
+   
       
       tts_publisher = new ROSLIB.Topic({
       	ros : ros,
       	name : tts_pub_topic,
       	messageType: "std_msgs/String"
         });
-      var init_tts = new ROSLIB.Message({
-      	  data: "hello world",
-        });
-      //tts_publisher.publish(init_tts);
+
     }
     
     
     function motion_response_listen(msg) {
+        var log = '<p>'+'</p>';
+        
     	if (msg.status_code.value === StatusCode.IDLING){
     		console.log("IDLING");
+    		log = '<p>'+'IDLING'+'</p>';
     	}
     	else if(msg.status_code.value === StatusCode.PLAYBACK){
     		console.log("PLAYBACK");
+    		log = '<p>'+'PLAYBACK'+'</p>';
     	}
 		else if(msg.status_code.value === StatusCode.PLAYBACK_FINISHED){
 			motion_res_flag = true;
 			console.log("PLAYBACK_FINISHED");
+			log = '<p>'+'PLAYBACK_FINISHED'+'</p>';
     	}
 		else{
 		    motion_res_flag = true;
-			console.log("UNKNOWN ERROR");	
+			console.log("UNKNOWN ERROR");
+			log = '<p>'+'UNKNOWN ERROR'+'</p>';	
 		}
+		$('.sta-log').after(log);
  	};
  	
     
-   function response_listen(msg) {
-	   if (msg.data.indexOf("tts_response")!== -1){
-		   tts_res_flag = true;
-	   }
-	   else if (msg.data.indexOf("face_response")!== -1){
-		   face_res_flag = true;
-	   }
-	   else{
-		   console.log("receive Unknown response");
-	   }
+   function tts_response_listen(msg) {
+	   tts_res_flag = true;
+	};
+	
+	function face_response_listen(msg) {
+		face_res_flag = true;
 	};
     
    function check_receive_all_response(){
@@ -297,7 +301,7 @@
     });
 	
 	//converting db
-	var scenes = [{"scene_id":0,"image":"images/prototype_scene_0.jpg","actions":[]},{"scene_id":1,"image":"images/prototype_scene_1.jpg","actions":[{"action_id":0,"tts":"prototype_1_0_tts","face":"ㅠe","motion":"robosem_motion_you_out"},{"action_id":1,"tts":"pro666pe_1_1_tts","face":"prototype_666","motion":"robosem_motion_lala"}]},{"scene_id":2,"image":"images/prototype_scene_2.jpg","actions":[{"action_id":0,"tts":"prototype_2_0_tts","face":"prototype_2_0_face","motion":"robosem_motion_no"},{"action_id":1,"tts":"prototype_2_1_tts","face":"prototype_2_1_face","motion":"robosem_motion_no"}]},{"scene_id":3,"image":"images/prototype_scene_3.jpg","actions":[{"action_id":0,"tts":"prototype_3_0_tts","face":"prototype_3_0_face","motion":"robosem_motion_scared"},{"action_id":1,"tts":"prototype_3_1_tts","face":"prototype_3_1_face","motion":"robosem_motion_scared"}]}]
+	var scenes = [{"scene_id":0,"image":"images/prototype_scene_0.jpg","actions":[]},{"scene_id":1,"image":"images/prototype_scene_1.jpg","actions":[{"action_id":0,"tts":"prototype_1_0_tts","face":"ㅠe","motion":"robosem_motion_you_out"},{"action_id":1,"tts":"pro666pe_1_1_tts","face":"prototype_666","motion":"robosem_motion_crazy_egyptian"}]},{"scene_id":2,"image":"images/prototype_scene_2.jpg","actions":[{"action_id":0,"tts":"prototype_2_0_tts","face":"prototype_2_0_face","motion":"robosem_motion_no"},{"action_id":1,"tts":"prototype_2_1_tts","face":"prototype_2_1_face","motion":"robosem_motion_no"}]},{"scene_id":3,"image":"images/prototype_scene_3.jpg","actions":[{"action_id":0,"tts":"prototype_3_0_tts","face":"prototype_3_0_face","motion":"robosem_motion_scared"},{"action_id":1,"tts":"prototype_3_1_tts","face":"prototype_3_1_face","motion":"robosem_motion_scared"}]}]
 	console.log("scenes");
 	console.log(scenes);
 	
@@ -313,22 +317,64 @@
 		this.motion = motion;
 	}
 	
+	//motion_api test
+	$(window).load(function(){
+	  $('.sta-play').click(function(){
+	    console.log($('.sta-motion-name').val());
+	    var motion_type = $('.sta-motion-name').val();
+	    var init_motion = new ROSLIB.Message({
+        	  start_playback: true,
+        	  motion_name: motion_type
+            });
+        motion_publisher.publish(init_motion);
+	  });
+
+    });
+    
+    //android test
+	$(window).load(function(){
+	  $('.sta-tts-play').click(function(){
+	    var tts_text = $('.sta-tts-text').val();
+	    var tts = new ROSLIB.Message({
+        	  data : Base64.encode(tts_text)
+            });
+        tts_publisher.publish(tts);
+	  });
+	  
+	  $('.sta-face-play').click(function(){
+	    var face_name = $('.sta-face-name').val();
+	    var face = new ROSLIB.Message({
+        	  data : face_name
+            });
+        face_publisher.publish(face);
+	  });
+    });
+	
 </script>
 </head>
 </html>
 
 <html>
 </body>
+<h1>Face list</h1>
+   <li>  iu1.jpg</li>
+   <li>  prototype_scene_0.jpg</li>
+   <li>  prototype_scene_1.jpg</li>
+   <li>  prototype_scene_2.jpg</li>
+   <li>  prototype_scene_3.jpg</li>
+   
 <h1>prototype TEST</h1>
-<div class="flexslider">
-    <ul class="slides">
-       <li><img src='images/prototype_scene_0.jpg'/></li><li><img src='images/prototype_scene_1.jpg'/></li><li><img src='images/prototype_scene_2.jpg'/></li><li><img src='images/prototype_scene_3.jpg'/></li>
-    </ul>
-</div>
-<p class="start_story">start story</p>
-<p class="pause_story">pause story</p>
-<p class="resume_story">resume story</p>
-<p class="stop_story">stop story</p> 
+
+<label>TTS: </label>
+<input class="sta-tts-text" type="text" placeholder='TTS Here' value = "">
+<input class="sta-tts-play" type="button" value = "Play"/></p>
+
+<label>FACE: </label>
+<input class="sta-face-name" type="text" placeholder='Face Here' value = "">
+<input class="sta-face-play" type="button" value = "Play"/></p>
+
+<h1>Log here</h1>
+<div = class='sta-log'></div>
 </body>
 </html>
 

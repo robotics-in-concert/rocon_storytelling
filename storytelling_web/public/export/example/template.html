@@ -8,6 +8,7 @@
 <script type="text/javascript" src="js/eventemitter2.js"></script> 
 <script type="text/javascript" src="js/roslib.js"></script> 
 <script type="text/javascript" src="js/jquery.flexslider.js"></script>
+<script type="text/javascript" src="js/base64.js"></script>
 <script type="text/javascript" type="text/javascript">
     var StatusCode = {
     		GENERAL_ERROR: -2,
@@ -19,9 +20,9 @@
     var ros = new ROSLIB.Ros();
 
     /*setting info publish topic name*/
-    var motion_pub_topic = "/motion_playback";
-    var face_pub_topic = "/face";
-    var tts_pub_topic = "/tts";
+    var motion_pub_topic = "/rocon_robosem/motion_player/motion_playback";
+    var face_pub_topic = "/sat_face";
+    var tts_pub_topic = "/sat_tts";
     
     /*setting info publish topic type*/
     var motion_pub_topic_type = "motion_retargeting_msgs/MotionPlayback";
@@ -29,11 +30,13 @@
     var tts_pub_topic_type = "std_msgs/String";
     
     /*setting info subscriber topic name*/
-    var response_sub_topic = "/response";
-    var motion_response_sub_topic = "/playback_status";
+    var motion_response_sub_topic = "/rocon_robosem/motion_player/playback_status";
+    var tts_response_sub_topic = "/tts_response";
+    var face_response_sub_topic = "/face_response";
     
     /*setting info publish topic type*/
-    var response_sub_topic_type = "std_msgs/String";
+    var tts_response_sub_topic_type = "std_msgs/String";
+    var face_response_sub_topic_type = "std_msgs/String";
     var motion_response_sub_topic_type = "motion_retargeting_msgs/PlaybackStatus";
     
     /*setting info subscriber topic type*/
@@ -100,12 +103,21 @@
     
     function setup_pub_sub() {
     	/*subscriber*/
-    	response_listener = new ROSLIB.Topic({
+    	tts_response_listener = new ROSLIB.Topic({
 	          ros : ros,
-	        	name : response_sub_topic,
-	        	messageType: response_sub_topic_type
+	        	name : tts_response_sub_topic,
+	        	messageType: tts_response_sub_topic_type
 	        	});    
-      	response_listener.subscribe(response_listen);
+    	tts_response_listener.subscribe(tts_response_listen);
+      	
+      	/*subscriber*/
+    	face_response_listener = new ROSLIB.Topic({
+	          ros : ros,
+	        	name : face_response_sub_topic,
+	        	messageType: face_response_sub_topic_type
+	        	});    
+    	face_response_listener.subscribe(face_response_listen);
+      	
       	
       	/*subscriber*/
     	motion_response_listener = new ROSLIB.Topic({
@@ -121,31 +133,16 @@
       	name : motion_pub_topic,
       	messageType: motion_pub_topic_type
         });
-      var init_motion = new ROSLIB.Message({
-    	  start_playback: true,
-    	  motion_name: "HELLO"
-        });
-      motion_publisher.publish(init_motion);
-      
       face_publisher = new ROSLIB.Topic({
       	ros : ros,
       	name : face_pub_topic,
       	messageType: "std_msgs/String"
         });
-      var init_face = new ROSLIB.Message({
-      	  data: "SMILE",
-        });
-      //face_publisher.publish(init_face);
-      
       tts_publisher = new ROSLIB.Topic({
       	ros : ros,
       	name : tts_pub_topic,
       	messageType: "std_msgs/String"
         });
-      var init_tts = new ROSLIB.Message({
-      	  data: "hello world",
-        });
-      //tts_publisher.publish(init_tts);
     }
     
     
@@ -161,46 +158,60 @@
 			console.log("PLAYBACK_FINISHED");
     	}
 		else{
+			motion_res_flag = true;
 			console.log("UNKNOWN ERROR");	
 		}
  	};
  	
     
-   function response_listen(msg) {
-	   if (msg.data.indexOf("tts_response")!== -1){
-		   tts_res_flag = true;
-	   }
-	   else if (msg.data.indexOf("face_response")!== -1){
-		   face_res_flag = true;
-	   }
-	   else{
-		   console.log("receive Unknown response");
-	   }
+   function tts_response_listen(msg) {
+	   tts_res_flag = true;
 	};
-    
+	
+	function face_response_listen(msg) {
+		face_res_flag = true;
+	};
+
    function check_receive_all_response(){
 	   return motion_res_flag && tts_res_flag && face_res_flag;
     };
-    function request_action(tts, motion, face){
-          var init_motion = new ROSLIB.Message({
-        	  start_playback: true,
-        	  motion_name: motion
-            });
-          motion_publisher.publish(init_motion);
-          
-	  	   motion_res_flag = false;
-	  	   var tts = new ROSLIB.Message({
-	  	     	  data: tts,
-	  	       });
-	  	   tts_publisher.publish(tts);
-	  	   tts_res_flag = false;
-	  	   var face = new ROSLIB.Message({
-	  	     	  data: face,
-	  	     	  
-	  	       });
-	  	   face_publisher.publish(face);
-	  	   face_res_flag = false;
-    };
+    function request_action(tts_text, motion_name, face_name){
+		   if(tts_text.length>0){
+			   var tts = new ROSLIB.Message({
+			    	  data: Base64.encode(tts_text)
+			      });
+			   tts_publisher.publish(tts);
+			   tts_res_flag = false;   
+		   }
+		   if(motion_name.length>0){
+			   var motion = new ROSLIB.Message({
+				   start_playback: true,
+				   motion_name: motion_name
+				   });
+			   motion_publisher.publish(motion);
+			   motion_res_flag = false;
+		   }
+    	   if(face_name.length>0){
+    		   var face = new ROSLIB.Message({
+ 		    	  data: face_name,
+ 		      });
+ 		      face_publisher.publish(face);
+ 		      face_res_flag = false;
+    	   }
+		   
+		   
+	};
+  
+  function request_init_robot(){
+	  var motion = new ROSLIB.Message({
+		  start_playback: true,
+		  motion_name: "init_motion"
+          });
+	  var face = new ROSLIB.Message({
+		  data: 'cento_logo.jpg',
+		  });
+	  face_publisher.publish(face);
+	  };
     
     function start_story(){
     	check_scene_status_timer = check_scene_status_timer || setInterval(check_scene_status, 500);
@@ -232,8 +243,9 @@
 	    		current_scene_id = 0;
 	    		clearInterval(check_scene_status_timer);
 	    		check_scene_status_timer = 0;
-	    		$('.flexslider').flexslider(check_scene_status_timer);
+	    		$('.flexslider').flexslider(current_scene_id);
 	    		scene_status = "IDLE"
+	    		request_init_robot();
 	    		break;
     	}
     };
@@ -250,7 +262,7 @@
 	    		console.log("scene_id: "+ current_scene_id+ " action_id: "+current_action_id);
 	    		var action = scenes[current_scene_id].actions[current_action_id];
 	    		console.log(action);
-	    		if (action === undefined){
+	    		if (action === undefined || action === null){
 	    			action_status = "ALL_RECEIVED"; 
 		    		break;
 	    		}
@@ -318,10 +330,10 @@
 <html>
 </body>
 <h1>%(STORY_NAME) TEST</h1>
-<p class="start_story">start story</p>
-<p class="pause_story">pause story</p>
-<p class="resume_story">resume story</p>
-<p class="stop_story">stop story</p>
+<button class="start_story">start story</button>
+<button class="pause_story">pause story</button>
+<button class="resume_story">resume story</button>
+<button class="stop_story">stop story</button>
 
 <div class="flexslider">
     <ul class="slides">
@@ -331,4 +343,5 @@
  
 </body>
 </html>
+
 

@@ -216,7 +216,7 @@ if (Meteor.isClient) {
 							face: _story_name+"_"+_scene_id+"_"+_action_id,
 							tts: _story_name+"_"+_scene_id+"_"+_action_id,};
 			var id = Random.id();
-		
+			
 			Actions.insert({
 				story_name: option.story_name,
 				scene_id: option.scene_id,
@@ -273,7 +273,7 @@ if (Meteor.isServer) {
 	Meteor.startup(function () {	 
 		// code to run on server at startup
 		var fs = Npm.require('fs');
-		var names = ["prototype","delivery","cleaning","patrol"];
+		var names = ["prototype"];
 		
 		for( var i = 0 ; i< names.length ; i++){
 			console.log("make execution page: " + names[i]+".html");
@@ -296,20 +296,6 @@ if (Meteor.isServer) {
 						scene_id: k,
 						image: "images/"+names[i]+"_scene_"+k+".jpg"
 						});
-					for (var l = 0 ; l <2 ; l++){
-						var motion =  names[i]+"_"+k+"_"+l+"_motion";
-						var face =  names[i]+"_"+k+"_"+l+"_face";
-						var tts =  names[i]+"_"+k+"_"+l+"_tts";
-						Actions.insert({
-							story_name:names[i],
-							scene_id: k,
-							action_id: l,
-							motion: motion,
-							face: face,
-							tts: tts
-						});
-					}
-					
 				}
 			}
 		};

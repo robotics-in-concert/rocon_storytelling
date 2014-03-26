@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,6 +9,7 @@
 <script type="text/javascript" src="js/eventemitter2.js"></script> 
 <script type="text/javascript" src="js/roslib.js"></script> 
 <script type="text/javascript" src="js/jquery.flexslider.js"></script>
+<script type="text/javascript" src="js/base64.js"></script>
 <script type="text/javascript" type="text/javascript">
     var StatusCode = {
     		GENERAL_ERROR: -2,
@@ -19,9 +21,9 @@
     var ros = new ROSLIB.Ros();
 
     /*setting info publish topic name*/
-    var motion_pub_topic = "/motion_playback";
-    var face_pub_topic = "/face";
-    var tts_pub_topic = "/tts";
+    var motion_pub_topic = "/rocon_robosem/motion_player/motion_playback";
+    var face_pub_topic = "/sat_face";
+    var tts_pub_topic = "/sat_tts";
     
     /*setting info publish topic type*/
     var motion_pub_topic_type = "motion_retargeting_msgs/MotionPlayback";
@@ -29,11 +31,13 @@
     var tts_pub_topic_type = "std_msgs/String";
     
     /*setting info subscriber topic name*/
-    var response_sub_topic = "/response";
-    var motion_response_sub_topic = "/playback_status";
+    var motion_response_sub_topic = "/rocon_robosem/motion_player/playback_status";
+    var tts_response_sub_topic = "/tts_response";
+    var face_response_sub_topic = "/face_response";
     
     /*setting info publish topic type*/
-    var response_sub_topic_type = "std_msgs/String";
+    var tts_response_sub_topic_type = "std_msgs/String";
+    var face_response_sub_topic_type = "std_msgs/String";
     var motion_response_sub_topic_type = "motion_retargeting_msgs/PlaybackStatus";
     
     /*setting info subscriber topic type*/
@@ -100,12 +104,21 @@
     
     function setup_pub_sub() {
     	/*subscriber*/
-    	response_listener = new ROSLIB.Topic({
+    	tts_response_listener = new ROSLIB.Topic({
 	          ros : ros,
-	        	name : response_sub_topic,
-	        	messageType: response_sub_topic_type
+	        	name : tts_response_sub_topic,
+	        	messageType: tts_response_sub_topic_type
 	        	});    
-      	response_listener.subscribe(response_listen);
+    	tts_response_listener.subscribe(tts_response_listen);
+      	
+      	/*subscriber*/
+    	face_response_listener = new ROSLIB.Topic({
+	          ros : ros,
+	        	name : face_response_sub_topic,
+	        	messageType: face_response_sub_topic_type
+	        	});    
+    	face_response_listener.subscribe(face_response_listen);
+      	
       	
       	/*subscriber*/
     	motion_response_listener = new ROSLIB.Topic({
@@ -121,31 +134,16 @@
       	name : motion_pub_topic,
       	messageType: motion_pub_topic_type
         });
-      var init_motion = new ROSLIB.Message({
-    	  start_playback: true,
-    	  motion_name: "HELLO"
-        });
-      motion_publisher.publish(init_motion);
-      
       face_publisher = new ROSLIB.Topic({
       	ros : ros,
       	name : face_pub_topic,
       	messageType: "std_msgs/String"
         });
-      var init_face = new ROSLIB.Message({
-      	  data: "SMILE",
-        });
-      //face_publisher.publish(init_face);
-      
       tts_publisher = new ROSLIB.Topic({
       	ros : ros,
       	name : tts_pub_topic,
       	messageType: "std_msgs/String"
         });
-      var init_tts = new ROSLIB.Message({
-      	  data: "hello world",
-        });
-      //tts_publisher.publish(init_tts);
     }
     
     
@@ -161,42 +159,45 @@
 			console.log("PLAYBACK_FINISHED");
     	}
 		else{
+			motion_res_flag = true;
 			console.log("UNKNOWN ERROR");	
 		}
  	};
  	
     
-   function response_listen(msg) {
-	   if (msg.data.indexOf("tts_response")!== -1){
-		   tts_res_flag = true;
-	   }
-	   else if (msg.data.indexOf("face_response")!== -1){
-		   face_res_flag = true;
-	   }
-	   else{
-		   console.log("receive Unknown response");
-	   }
+   function tts_response_listen(msg) {
+	   console.log("Response TTS")
+	   tts_res_flag = true;
 	};
-    
+	
+	function face_response_listen(msg) {
+		face_res_flag = true;
+	};
+
    function check_receive_all_response(){
+	   console.log("motion: "+ motion_res_flag);
+	   console.log("tts: "+ tts_res_flag);
+	   console.log("face: "+ face_res_flag);
+	   
 	   return motion_res_flag && tts_res_flag && face_res_flag;
     };
-    function request_action(tts, motion, face){
+    function request_action(tts_text, motion, face){
           var init_motion = new ROSLIB.Message({
         	  start_playback: true,
         	  motion_name: motion
             });
           motion_publisher.publish(init_motion);
-          
 	  	   motion_res_flag = false;
+	  	  
+	  	   console.log(Base64.encode(tts_text));
 	  	   var tts = new ROSLIB.Message({
-	  	     	  data: tts,
+	  	     	  data: Base64.encode(tts_text)
 	  	       });
 	  	   tts_publisher.publish(tts);
 	  	   tts_res_flag = false;
+	  	   
 	  	   var face = new ROSLIB.Message({
 	  	     	  data: face,
-	  	     	  
 	  	       });
 	  	   face_publisher.publish(face);
 	  	   face_res_flag = false;
@@ -294,8 +295,8 @@
       });
     });
 	
-	//converting db
-	var scenes = [{"scene_id":0,"image":"images/prototype_scene_0.jpg","actions":[]},{"scene_id":1,"image":"images/prototype_scene_1.jpg","actions":[{"action_id":0,"tts":"prototype_1_0_tts","face":"ㅠe","motion":"ㅁㄴ유_motion"},{"action_id":1,"tts":"pro666pe_1_1_tts","face":"prototype_666","motion":"ㅁㄴㅇㄹ"}]},{"scene_id":2,"image":"images/prototype_scene_2.jpg","actions":[{"action_id":0,"tts":"prototype_2_0_tts","face":"prototype_2_0_face","motion":"prototype_2_0_motion"},{"action_id":1,"tts":"prototype_2_1_tts","face":"prototype_2_1_face","motion":"prototype_2_1_motion"}]},{"scene_id":3,"image":"images/prototype_scene_3.jpg","actions":[{"action_id":0,"tts":"prototype_3_0_tts","face":"prototype_3_0_face","motion":"prototype_3_0_motion"},{"action_id":1,"tts":"prototype_3_1_tts","face":"prototype_3_1_face","motion":"prototype_3_1_motion"}]}]
+	/*converting db*/
+	var scenes = [{"scene_id":0,"image":"images/prototype_scene_0.jpg","actions":[{"action_id":0,"tts":"안녕. 만나서 반가워. 나는 로보샘이야","face":"prototype_scene_0.jpg","motion":"robosem_motion_no"}]},{"scene_id":1,"image":"images/prototype_scene_1.jpg","actions":[{"action_id":0,"tts":"원하는 서비스를 선택해 주세요","face":"prototype_scene_1.jpg","motion":"robosem_motion_no"}]},{"scene_id":2,"image":"images/prototype_scene_2.jpg","actions":[{"action_id":0,"tts":"음료 주문서비스를 선택했습니다. 곧 거북이가 음료를 배달합니다. 잠시만 기다려 주세요","face":"prototype_scene_2.jpg","motion":"robosem_motion_no"}]},{"scene_id":3,"image":"images/prototype_scene_3.jpg","actions":[{"action_id":0,"tts":"맛있게 드세요.","face":"prototype_scene_3.jpg","motion":"robosem_motion_no"}]}]
 	console.log("scenes");
 	console.log(scenes);
 	
@@ -318,15 +319,18 @@
 <html>
 </body>
 <h1>prototype TEST</h1>
+<p class="start_story">start story</p>
+<p class="pause_story">pause story</p>
+<p class="resume_story">resume story</p>
+<p class="stop_story">stop story</p>
+
 <div class="flexslider">
     <ul class="slides">
        <li><img src='images/prototype_scene_0.jpg'/></li><li><img src='images/prototype_scene_1.jpg'/></li><li><img src='images/prototype_scene_2.jpg'/></li><li><img src='images/prototype_scene_3.jpg'/></li>
     </ul>
 </div>
-<p class="start_story">start story</p>
-<p class="pause_story">pause story</p>
-<p class="resume_story">resume story</p>
-<p class="stop_story">stop story</p> 
+ 
 </body>
 </html>
+
 
