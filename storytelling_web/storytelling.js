@@ -1,6 +1,8 @@
 Stories = new Meteor.Collection("stories");
 Scenes = new Meteor.Collection("scenes");
 Actions = new Meteor.Collection("actions");
+Emotions = new Meteor.Collection("emotions");
+
 var Router = Backbone.Router.extend({
 	  routes: {
 	    "main":                 "main", //this will be http://your_domain/main
@@ -195,6 +197,12 @@ if (Meteor.isClient) {
 		}
 	};
 	
+	Template.showSetSceneDialog.emotions = function(){
+		console.log("show emotions");
+		return Emotions.find({}, {sort :{action_id:1}});
+	};
+	
+	
 	Template.showSetSceneDialog.rendered = function(){
 		$(function () {
 		    $('#action_tabs a:last').tab('show');
@@ -235,10 +243,18 @@ if (Meteor.isClient) {
 			
 			var action_cs = Actions.find({story_name:_story_name,scene_id:_scene_id}, {sort :{action_id:1}});
 			action_cs.forEach(function(action){
-				console.log(action);
+				
+				console.log(_motion);
+				
 				var _motion = template.find("."+action._id+"_motion").value;
 				var _face = template.find("."+action._id+"_face").value;
 				var _tts = template.find("."+action._id+"_tts").value;
+				
+				console.log(_motion);
+				console.log(_face);
+				console.log(_tts);
+				
+				
 				Actions.update(action._id, {$set: {motion: _motion}});
 				Actions.update(action._id, {$set: {face: _face}});
 				Actions.update(action._id, {$set: {tts: _tts}});
@@ -274,12 +290,21 @@ if (Meteor.isServer) {
 		// code to run on server at startup
 		var fs = Npm.require('fs');
 		var names = ["prototype"];
+		var emotions = ['angry','default','disappoint','fear','happy','sad','shame','surprise','think','wink' ];
 		
 		for( var i = 0 ; i< names.length ; i++){
 			console.log("make execution page: " + names[i]+".html");
 			fs.writeFileSync("../../../../../public/export/example/"+names[i]+".html", "");
 		}
-	
+		
+		if (Emotions.find().count() === 0){
+			for( var i = 0 ; i< emotions.length ; i++){
+				Emotions.insert({
+					name: emotions[i]
+				})
+			}
+		}
+			
 		if (Stories.find().count() === 0){
 			for( var i = 0 ; i< names.length ; i++){
 				Stories.insert({

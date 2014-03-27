@@ -135,8 +135,13 @@
 					<label>Motion: </label>
 					<input type="text" value="{{motion}}" class="{{_id}}_motion"> 
 					<label>Face: </label>
-					<input type="text" value="{{face}}" class="{{_id}}_face"> 
-					<label>TTS: </label>
+					<select class="span3 {{_id}}_face">
+					  <option>{{face}}</option>
+					  {{#each emotions}}
+	                	<option>{{name}}</option>
+	                {{/each}}
+              	</select>
+              	<label>TTS: </label>
 					<input type="text" value="{{tts}}" class="{{_id}}_tts">
 				</div>
 			{{/each}}
