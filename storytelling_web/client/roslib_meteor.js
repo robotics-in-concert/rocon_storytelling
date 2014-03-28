@@ -1,7 +1,8 @@
+
+;!function(exports, undefined) {
 /**
  * @author Russell Toris - rctoris@wpi.edu
  */
-
 var ROSLIB = ROSLIB || {
   REVISION : '6'
 };
@@ -1631,3 +1632,12 @@ ROSLIB.UrdfVisual = function(options) {
   initXml(xml);
 };
 
+  if (typeof define === 'function' && define.amd) {
+    define(function() {
+      return ROSLIB;
+    });
+  } else {
+    exports.ROSLIB = ROSLIB; 
+  }
+
+}(typeof process !== 'undefined' && typeof process.title !== 'undefined' && typeof exports !== 'undefined' ? exports : window);

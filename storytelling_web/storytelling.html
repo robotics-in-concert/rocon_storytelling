@@ -10,6 +10,9 @@
 	{{#if is_main}}
 		{{> main_page}}
 	{{/if}}
+	{{#if is_setting}}
+		{{> setting_page}}
+	{{/if}}
 	{{#if is_test}}
 		{{> test_page}}
 	{{/if}}
@@ -74,12 +77,12 @@
 <template name="settingborad" >
 	<div class="input-prepend">
 		  <span class="add-on">Story Name</span>
-		  <input class="input-small sta-story_name" id="prependedInput" type="text" placeholder={{story_name}} value = "{{story_name}}">
+		  <input class="input-small sat-story_name" id="prependedInput" type="text" placeholder={{story_name}} value = "{{story_name}}">
 		  <span class="add-on">Master IP</span>
-		  <input class="input-medium sta-master_ip" id="prependedInput" type="text" placeholder={{master_ip}} value = "{{master_ip}}">
+		  <input class="input-medium sat-master_ip" id="prependedInput" type="text" placeholder={{master_ip}} value = "{{master_ip}}">
 		  <span class="add-on">Robot Type</span>
-		  <input class="input-small sta-robot_type" id="prependedInput" type="text" placeholder={{robot_type}} value = {{robot_type}}>
-		  <button class="btn btn-primary sta-save-setting" type="button">save</button>
+		  <input class="input-small sat-robot_type" id="prependedInput" type="text" placeholder={{robot_type}} value = {{robot_type}}>
+		  <button class="btn btn-primary sat-save-setting" type="button">save</button>
 	</div>
 </template>
 
@@ -103,8 +106,8 @@
         <p>Robot Type: <b>{{robot_type}}</b></p>
     </div>
      
-	 <button class="btn btn-primary sta-export">Export</button>
-	 <button class="btn btn-primary sta-execution" >Execution</button>
+	 <button class="btn btn-primary sat-export">Export</button>
+	 <button class="btn btn-primary sat-execution" >Execution</button>
 	
 </template>
 
@@ -133,16 +136,23 @@
 				<div class="tab-pane" id="{{action_id}}">
 					<button type="button" class="close delete">&times;</button>
 					<label>Motion: </label>
-					<input type="text" value="{{motion}}" class="{{_id}}_motion"> 
+					<select class="span4 {{_id}}_motion">
+					  <option>{{motion}}</option>
+					  {{#each motions}}
+	                	<option>{{motion_name}}</option>
+	                {{/each}}
+              	</select>
+              	
+					
 					<label>Face: </label>
-					<select class="span3 {{_id}}_face">
+					<select class="span4 {{_id}}_face">
 					  <option>{{face}}</option>
 					  {{#each emotions}}
 	                	<option>{{name}}</option>
 	                {{/each}}
               	</select>
               	<label>TTS: </label>
-					<input type="text" value="{{tts}}" class="{{_id}}_tts">
+					<input type="text" value="{{tts}}" class="span4 {{_id}}_tts">
 				</div>
 			{{/each}}
 		</div>
@@ -157,18 +167,72 @@
 	</div>
 </template>
 
-<template name="test_page">
-
-  <h4>test page</h4>
-  <input class = "sta-export" type="button" value = "Export"/><br/>
-  <input class = "sta-get" type="button" value = "GET"/><br/>
-  <a href="http://192.168.10.128:3000/export/example/{{exec_path}}" target="_blank">Link</a>
-  <br/>
+<template name="setting_page">
+<h1>Setting Page</h1>
+  <div class="span12">
+  <div class="input-prepend input-append">
+    <span class="add-on">Topic </span>
+    <input class="input-xxlarge sat-motion-list-topic" 
+    id="appendedPrependedInput" 
+    type="text" 
+    placeholder="input motion list topic" 
+    value="/rocon_robosem/motion_player/motion_list">
+  </div>
   
+  <div class="input-prepend input-append">
+    <span class="add-on">Type </span>
+    <input class="input-xxlarge sat-motion-list-topic-type" 
+    id="appendedPrependedInput" 
+    type="text" 
+    placeholder="input motion list topic type" 
+    value="motion_retargeting_msgs/MotionList">
+  </div>
+  
+  <div class="input-prepend input-append">
+    <span class="add-on">ROBOT IP </span>
+    <input class="input-large sat-robot-ip" id="appendedPrependedInput" type="text" placeholder="input robot ip" value="localhost:9090">
+    <button class="btn btn-primary sat-connect-robot" type="button" value = "">Connect</button>
+  </div>
+  </div>
+  
+  <div class="span12 sat-new-motions">
+  <h3>New motions</h3>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>이름</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each new_motions}}
+    <tr>
+      <td>{{motion_name}}</td>
+      <a class="btn sat-add-motion"><i class="icon-plus"></i></a>
+    </tr>
+    {{/each}}
+    </tbody>
+  </table>
+  </div>
+  
+  <div class="span12">
+  
+  <h3>Robot List</h3>
+  <select class="span3 sat-robot-list">
   {{#each robots}}
-		robot name: <p>{{robot_name}}</p>
-		motiony list: <p>{{motion_list}}</p>
+          	<option>{{robot_name}}</option>
   {{/each}}
+  </select>
   
+  <h3>Motion List</h3>
+  {{#each motions}}
+  <div class="input-prepend">
+    <span class="add-on">{{motion_name}} </span>
+    <a class="btn sat-substraction-motion"><i class="icon-minus"></i></a>
+  </div>
+  {{/each}}
+  </div>
+
 </template>
 
+<template name="test_page">
+</template>

@@ -7,9 +7,13 @@ var Router = Backbone.Router.extend({
 	  routes: {
 	    "main":                 "main", //this will be http://your_domain/main
 	    "test":             "test",  // http://your_domain/test
+	    "setting":             "setting",  // http://your_domain/setting
 	  },
 	  main: function() {
 		  Session.set('currentPage', 'main_page'); 
+	  },
+	  setting: function() {
+		  Session.set('currentPage', 'setting_page');
 	  },
 	  test: function() {
 		  Session.set('currentPage', 'test_page');
@@ -63,11 +67,11 @@ if (Meteor.isClient) {
 	};
 	 
 	Template.settingborad.events({
-		'click button.sta-save-setting': function(event,tmpl){
+		'click button.sat-save-setting': function(event,tmpl){
 			if(event.type === "click"){
-				//var new_story_name = tmpl.find("input.sta-story_name").value;
-				var new_robot_type = tmpl.find("input.sta-robot_type").value;
-				var new_master_ip = tmpl.find("input.sta-master_ip").value;
+				//var new_story_name = tmpl.find("input.sat-story_name").value;
+				var new_robot_type = tmpl.find("input.sat-robot_type").value;
+				var new_master_ip = tmpl.find("input.sat-master_ip").value;
 			
 				var story = Stories.findOne(Session.get("selected_story"));
 				//action update
@@ -159,7 +163,7 @@ if (Meteor.isClient) {
 	};
 	
 	Template.launchboard.events({
-		'click .sta-export' : function(){
+		'click .sat-export' : function(){
 			var story_id = Session.get("selected_story");
 			Meteor.call("export",story_id,function (err) {
 	            if (err) 
@@ -169,8 +173,8 @@ if (Meteor.isClient) {
 	            	alert("export complete"); // change the alert to rotation ui
 	        });
 		},
-		'click .sta-execution' : function(){
-			console.log("click .sta-execution");
+		'click .sat-execution' : function(){
+			console.log("click .sat-execution");
 			story = Stories.findOne(Session.get("selected_story"));
 			window.open("http://192.168.10.128:3000/export/example/"+story.execution_path);
 		},
@@ -195,6 +199,17 @@ if (Meteor.isClient) {
 		else{
 			return undefined;
 		}
+	};
+	
+	Template.SceneSettingDialog.motions =  function () {
+		var robotcs = Robots.find({robot_name:"robosem"});
+		var motion_list;
+		robotcs.forEach(function(arg){
+			motion_list = arg.motion_list;
+			console.log(motion_list);
+		});
+		console.log(motion_list);
+		return motion_list;
 	};
 	
 	Template.SceneSettingDialog.emotions = function(){
@@ -254,7 +269,6 @@ if (Meteor.isClient) {
 				console.log(_face);
 				console.log(_tts);
 				
-				
 				Actions.update(action._id, {$set: {motion: _motion}});
 				Actions.update(action._id, {$set: {face: _face}});
 				Actions.update(action._id, {$set: {tts: _tts}});
@@ -270,6 +284,9 @@ if (Meteor.isClient) {
 			console.log("delete");
 			console.log(this._id);
 			Actions.remove(this._id);
+			$(function () {
+			    $('#action_tabs a:last').tab('show');
+			});
 		}, 
 	});
 	
@@ -281,6 +298,10 @@ if (Meteor.isClient) {
 	
 	Template.index_page.is_test= function () {
 		var value = (Session.get("currentPage") === "test_page" ? true : false);
+		return value;
+	}; 
+	Template.index_page.is_setting= function () {
+		var value = (Session.get("currentPage") === "setting_page" ? true : false);
 		return value;
 	}; 
 }

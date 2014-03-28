@@ -1,3 +1,6 @@
+/**
+ * New node file
+ */
 if (Meteor.isServer) {
 	var fs = Npm.require('fs');
 	var path = Npm.require('path');
@@ -8,7 +11,7 @@ if (Meteor.isServer) {
     },
     
     export: function (story_id) {
-		
+
     	Scene = function(id, image){
 			this.scene_id=id;
 			this.image = image;
@@ -25,13 +28,13 @@ if (Meteor.isServer) {
 	   var story_name = '';
 	   var execution_path = '';
 	   var scenes = '';
-	   
+
 	   var story = Stories.findOne(story_id);
 	   master_ip = story.master_ip;
 	   story_name = story.story_name;
 	   execution_path = story.execution_path;
 	   scenes = db2scenes(story);
-	   
+
 	   var li_tags = "";
 	   for (var k  = 0; k < scenes .length ; k ++){
 		   var li_tag_tmpl = "<li><img src='%(IMAGE_SRC_PATH)'/></li>"
@@ -42,7 +45,7 @@ if (Meteor.isServer) {
 	   			.replace("%(STORY_NAME)",story_name)
 	   			.replace("%(MASTER_IP)",master_ip)
 			   .replace("%(IMAGES_SRC_PATH)",li_tags);
-	   
+
 	   function db2scenes(story){
 		   if(story){
 			 //access the scene info
