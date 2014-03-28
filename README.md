@@ -4,6 +4,8 @@ rocon_storytelling
 Software for our storytelling tool
 
 
+
+
 ### For Check StoryTelling Authoring Tool with Robosem Simuluation
 
 - launch the meteor
@@ -81,4 +83,21 @@ launch the android app, and write your pc ip in the "Robot uri" box. ex) ```http
 
 you check the "cento" image and then, go to the test page, write the tts text and push the play button, sta app speeches your text.
 Also, you can select the displayed image.but the sta app display only image in image list.
+
+
+### Setting the robot motion
+
+- launch the meteor
+```
+> cd <rocon_storytelling package>/storytelling_web
+> meteor
+```
+- launch the [robosem storytelling simulation](https://github.com/robotics-in-concert/rocon_storytelling/blob/hydro-devel/README.md)
+- connect bellow url
+
+```
+http://localhost:3000/setting
+```
+- Set the robot ip and the topic name and type about motion list and . 
+- And push the "connect" and add the motion
 
