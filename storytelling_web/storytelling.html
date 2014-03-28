@@ -54,8 +54,8 @@
        </footer>
 	</div>
 	
-	{{#if showSetSceneDialog}}
-		{{> showSetSceneDialog}}
+	{{#if isShowSetSceneDialog}}
+		{{> SceneSettingDialog}}
 	{{/if}}	
 </template>
 
@@ -88,7 +88,7 @@
 	<div class="row">
 		{{#each scenes}}
 			<div class="span3">
-				<img class= "scene_image img-responsive img-polaroid"src="{{image}}" >
+				<img class= "scene_image img-responsive img-polaroid" src="{{image}}" >
 			</div>
 	 	{{/each}}
 	</div>
@@ -108,7 +108,7 @@
 	
 </template>
 
-<template name = "showSetSceneDialog">
+<template name = "SceneSettingDialog">
 
 	<div class="mask"></div>
 	<div class="modal">
@@ -160,10 +160,10 @@
 <template name="test_page">
 
   <h4>test page</h4>
-  <input class = "sta-export" type="button" value = "Export"/></p>
-  <input class = "sta-get" type="button" value = "GET"/></p>
+  <input class = "sta-export" type="button" value = "Export"/><br/>
+  <input class = "sta-get" type="button" value = "GET"/><br/>
   <a href="http://192.168.10.128:3000/export/example/{{exec_path}}" target="_blank">Link</a>
-  <p/>
+  <br/>
   
   {{#each robots}}
 		robot name: <p>{{robot_name}}</p>

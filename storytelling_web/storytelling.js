@@ -25,7 +25,7 @@ if (Meteor.isClient) {
 		Backbone.history.start({pushState: true}); 
 		var selected = Session.get("selected_story");
 		console.log("start up: "+selected);
-		Session.set("showSetSceneDialog", false); 
+		Session.set("isShowSetSceneDialog", false); 
 	});
 	
 	Template.main_page.selected = function(){
@@ -33,8 +33,8 @@ if (Meteor.isClient) {
 	    return story && story.story_name;
 	};
 	
-	Template.main_page.showSetSceneDialog = function () {
-		  return Session.get("showSetSceneDialog");
+	Template.main_page.isShowSetSceneDialog = function () {
+		  return Session.get("isShowSetSceneDialog");
 	};
 	
 	Template.storyboard.events({
@@ -106,7 +106,7 @@ if (Meteor.isClient) {
 			console.log("story name: "+ _story_name);
 			console.log("scene id: "+ _scene_id);
 
-			Session.set("showSetSceneDialog", true);
+			Session.set("isShowSetSceneDialog", true);
 		},
 	
 	});
@@ -178,12 +178,12 @@ if (Meteor.isClient) {
 	
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	Template.showSetSceneDialog.image = function(){
+	Template.SceneSettingDialog.image = function(){
 		var scene = Scenes.findOne(Session.get("selected_scene"));
 		return scene && scene.image;
 	};
 	
-	Template.showSetSceneDialog.actions = function(){
+	Template.SceneSettingDialog.actions = function(){
 		console.log("show actions");
 		var selected_scene = Scenes.findOne(Session.get("selected_scene"));
 		if(selected_scene){
@@ -197,19 +197,19 @@ if (Meteor.isClient) {
 		}
 	};
 	
-	Template.showSetSceneDialog.emotions = function(){
+	Template.SceneSettingDialog.emotions = function(){
 		console.log("show emotions");
 		return Emotions.find({}, {sort :{action_id:1}});
 	};
 	
 	
-	Template.showSetSceneDialog.rendered = function(){
+	Template.SceneSettingDialog.rendered = function(){
 		$(function () {
 		    $('#action_tabs a:last').tab('show');
 		});
 	};
 	
-	Template.showSetSceneDialog.events({
+	Template.SceneSettingDialog.events({
 		'click .add': function (event, template) {
 			
 			var selected_scene = Scenes.findOne(Session.get("selected_scene"));
@@ -259,11 +259,11 @@ if (Meteor.isClient) {
 				Actions.update(action._id, {$set: {face: _face}});
 				Actions.update(action._id, {$set: {tts: _tts}});
 			});
-			Session.set("showSetSceneDialog", false);
+			Session.set("isShowSetSceneDialog", false);
 		},
 
 		'click .cancel': function () {
-			Session.set("showSetSceneDialog", false);
+			Session.set("isShowSetSceneDialog", false);
 		},
 		
 		'click .delete': function () {
