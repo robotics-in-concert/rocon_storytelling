@@ -3,7 +3,7 @@
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
   
   <!-- Motion player -->
-  <node name="motion_player" pkg="motion_retargeting" type="motion_player_rosbag_fjta">
+  <node name="motion_player" pkg="motion_retargeting" type="motion_player_rosbag_fjta" output="screen">
     <param name="action_server_name" value="/robosem/upper_body_controller"/>
     <param name="motion_package" value="robosem_motions"/>
   </node>
