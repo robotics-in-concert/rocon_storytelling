@@ -4,7 +4,7 @@
 Robots = new Meteor.Collection("robots");
 if (Meteor.isClient) {
 	var ros = new ROSLIB.Ros();
-	var new_motions = []
+	var new_motions = [];
 	settingROSCallbacks();
     
     function settingROSCallbacks(){  	

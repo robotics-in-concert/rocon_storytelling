@@ -47,7 +47,7 @@
 			<div class='span3 bs-docs-sidebar'>
 				<ul class="nav nav-list bs-docs-sidenav affix-top">
 					{{> storyboard}}
-					{{> launchboard}}		
+					{{> launchboard}}
 				</ul>
 			</div>
 		</div>
@@ -169,31 +169,34 @@
 
 <template name="setting_page">
 <h1>Setting Page</h1>
-  <div class="span12">
-  <div class="input-prepend input-append">
-    <span class="add-on">Topic </span>
-    <input class="input-xxlarge sat-motion-list-topic" 
-    id="appendedPrependedInput" 
-    type="text" 
-    placeholder="input motion list topic" 
-    value="/rocon_robosem/motion_player/motion_list">
-  </div>
-  
-  <div class="input-prepend input-append">
-    <span class="add-on">Type </span>
-    <input class="input-xxlarge sat-motion-list-topic-type" 
-    id="appendedPrependedInput" 
-    type="text" 
-    placeholder="input motion list topic type" 
-    value="motion_retargeting_msgs/MotionList">
-  </div>
-  
-  <div class="input-prepend input-append">
-    <span class="add-on">ROBOT IP </span>
-    <input class="input-large sat-robot-ip" id="appendedPrependedInput" type="text" placeholder="input robot ip" value="localhost:9090">
-    <button class="btn btn-primary sat-connect-robot" type="button" value = "">Connect</button>
-  </div>
-  </div>
+<div class = "container">
+<h2>Robot Motion List Setting</h2>
+	<div class="span12">
+	<div class="input-prepend input-append">
+	  <span class="add-on">Topic </span>
+	  <input class="input-xxlarge sat-motion-list-topic" 
+	  id="appendedPrependedInput" 
+	  type="text" 
+	  placeholder="input motion list topic" 
+	  value="/rocon_robosem/motion_player/motion_list">
+	</div>
+	
+	<div class="input-prepend input-append">
+	  <span class="add-on">Type </span>
+	  <input class="input-xxlarge sat-motion-list-topic-type" 
+	  id="appendedPrependedInput" 
+	  type="text" 
+	  placeholder="input motion list topic type" 
+	  value="motion_retargeting_msgs/MotionList">
+	</div>
+	
+	<div class="input-prepend input-append">
+	  <span class="add-on">ROBOT IP </span>
+	  <input class="input-large sat-robot-ip" id="appendedPrependedInput" type="text" placeholder="input robot ip" value="localhost:9090">
+	  <button class="btn btn-primary sat-connect-robot" type="button" value = "">Connect</button>
+	</div>
+	</div>
+
   
   <div class="span12 sat-new-motions">
   <h3>New motions</h3>
@@ -213,6 +216,7 @@
     </tbody>
   </table>
   </div>
+
   
   <div class="span12">
   
@@ -231,7 +235,7 @@
   </div>
   {{/each}}
   </div>
-
+ </div>
 </template>
 
 <template name="test_page">

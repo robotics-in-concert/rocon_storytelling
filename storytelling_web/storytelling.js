@@ -176,7 +176,8 @@ if (Meteor.isClient) {
 		'click .sat-execution' : function(){
 			console.log("click .sat-execution");
 			story = Stories.findOne(Session.get("selected_story"));
-			window.open("http://192.168.10.128:3000/export/example/"+story.execution_path);
+			var server_ip = location.href.split('/main')[0];
+			window.open(server_ip+"/export/example/"+story.execution_path);
 		},
   });
 	
