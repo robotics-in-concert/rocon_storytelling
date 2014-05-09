@@ -30,12 +30,6 @@ On the real robot
 $ roslaunch robosem_meta rapp_platform.launch
 ```
 
-In a seperate terminal, activate the motor system
-
-```
-$ rostopic pub /rocon_robosem/enable std_msgs/String "data: 'all'"
-```
-
 - Start the robot app (motion player + rosbridge)
 
 Use the new GUI
@@ -48,6 +42,12 @@ Or via command line
 
 ```
 $ rosservice call /rocon_robosem/start_rapp "name: 'robosem_storytelling/robosem_storytelling'"
+```
+
+- Activate motors (real robot only)
+
+```
+$ rostopic pub /rocon_robosem/enable std_msgs/String "data: 'all'"
 ```
 
 - Start the web app
