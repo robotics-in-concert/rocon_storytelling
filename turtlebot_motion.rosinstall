@@ -37,4 +37,4 @@
 - git: {local-name: rqt_capabilities, uri: 'https://github.com/robotics-in-concert/rqt_capabilities.git',
     version: master}
 - git: {local-name: turtlebot_motion, uri: 'https://github.com/robotics-in-concert/rocon_storytelling.git',
-    version: hydro-devel}
+    version: turtlebot_motion}
