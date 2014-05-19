@@ -1,0 +1,16 @@
+
+<launch>
+  <node pkg="nodelet" type="nodelet" name="teleop_velocity_smoother" args="load yocs_velocity_smoother/VelocitySmootherNodelet /mobile_base_nodelet_manager">
+    <rosparam file="$(find turtlebot_bringup)/param/defaults/smoother.yaml" command="load"/>
+    <remap from="teleop_velocity_smoother/raw_cmd_vel" to="turtlebot_motion/cmd_vel"/>
+    <remap from="teleop_velocity_smoother/smooth_cmd_vel" to="/cmd_vel_mux/input/teleop"/>
+    
+    <!-- Robot velocity feedbacks; use the one configured as base default -->
+    <remap from="teleop_velocity_smoother/odometry" to="/odom"/>
+    <remap from="teleop_velocity_smoother/robot_cmd_vel" to="/mobile_base/commands/velocity"/>
+  </node>
+
+  <node pkg="turtlebot_motion" name="turtlebot_motion" type="turtlebot_motion.py">
+  </node>
+
+</launch>
