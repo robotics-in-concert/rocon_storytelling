@@ -10,7 +10,7 @@
     <remap from="teleop_velocity_smoother/robot_cmd_vel" to="/mobile_base/commands/velocity"/>
   </node>
 
-  <node pkg="turtlebot_motion" name="turtlebot_motion" type="turtlebot_motion.py">
+  <node pkg="turtlebot_motion" name="turtlebot_motion" type="turtlebot_motion_player.py" output="screen">
   </node>
 
 </launch>

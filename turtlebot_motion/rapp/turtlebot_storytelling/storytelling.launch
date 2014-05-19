@@ -1,4 +1,4 @@
 <launch>
-  <include file="$(find turtlebot_motion)/launch/turtlebot_motion.launch"/>
+  <include file="$(find turtlebot_motion)/launch/motion_player.launch"/>
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
 </launch>

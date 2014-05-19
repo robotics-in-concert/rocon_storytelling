@@ -1,5 +1,5 @@
 
-from motion_retargeting_msgs import PlaybackStatusCodes
+from motion_retargeting_msgs.msg import PlaybackStatusCodes
 
 code_string = {}
 

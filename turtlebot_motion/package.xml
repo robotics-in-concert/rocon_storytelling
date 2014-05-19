@@ -20,6 +20,7 @@
   <run_depend>rospy</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>motion_retargeting_msgs</run_depend>
+  <run_depend>rosbridge_server</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
