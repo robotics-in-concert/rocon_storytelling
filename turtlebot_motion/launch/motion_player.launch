@@ -11,6 +11,9 @@
   </node>
 
   <node pkg="turtlebot_motion" name="turtlebot_motion" type="turtlebot_motion_player.py" output="screen">
+    <param name="x_vel" value="0.4"/>
+    <param name="z_vel" value="0.5"/>
+    <param name="timeout" value="1.0"/>
   </node>
 
 </launch>
