@@ -22,7 +22,6 @@ class MotionPlayer(object):
 
         self.sub = {}
         self.sub['motion_playack'] = rospy.Subscriber('motion_playback', m_msgs.MotionPlayback, self.process_motion_playback)
-        self.status_code = 
 
     def process_motion_playback(self, msg): 
         self.loginfo('Received Motion playback request')

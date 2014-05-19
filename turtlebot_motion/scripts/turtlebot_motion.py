@@ -22,4 +22,3 @@ if __name__ == '__main__':
     player.loginfo("Initialized")
     player.spin()
     player.loginfo("Bye Bye")
-
