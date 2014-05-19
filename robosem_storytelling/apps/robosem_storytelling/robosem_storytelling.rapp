@@ -1,6 +1,0 @@
-display: Robosem Storytelling
-description: Robosem tells stories
-compatibility: rocon:/robosem/
-launch: robosem_storytelling/robosem_storytelling.launch
-public_interface: robosem_storytelling/robosem_storytelling.interface
-icon: robosem_storytelling/robosem_storytelling.png

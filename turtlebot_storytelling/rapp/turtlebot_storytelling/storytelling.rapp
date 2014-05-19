@@ -1,0 +1,6 @@
+display: Turtlebot Storytelling
+description: turtlebot tells stories
+compatibility: rocon:/turtlebot/
+launch: turtlebot_storytelling/storytelling.launch
+public_interface: Turtlebot_storytelling/storytelling.interface
+#icon: turtlebot_storytelling/storytelling.png
