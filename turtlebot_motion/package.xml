@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>turtlebot_storytelling</name>
+  <name>turtlebot_motion</name>
   <version>0.0.0</version>
-  <description>The turtlebot_storytelling package</description>
+  <description>The turtlebot_motion package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
@@ -11,7 +11,7 @@
 
   <license>BSD</license>
 
-  <!-- <url type="website">http://wiki.ros.org/turtlebot_storytelling</url> -->
+  <!-- <url type="website">http://wiki.ros.org/turtlebot_motion</url> -->
 
   <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
 
@@ -22,10 +22,6 @@
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <!-- You can specify that this package is a metapackage here: -->
-    <!-- <metapackage/> -->
-
-    <!-- Other tools can request additional information be placed here -->
-
+    <rocon_app>rapp/turtlebot_storytelling/storytelling.rapp</rocon_app>
   </export>
 </package>
