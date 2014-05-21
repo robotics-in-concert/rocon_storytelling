@@ -97,7 +97,7 @@ you check the changed Launch Info.
 
 Download and insall the android app.
 ```
-http://files.yujinrobot.com/android/apks/sat_app_ver_1.0.apk
+http://files.yujinrobot.com/android/apks/sat_app_ver_2.0.apk
 ```
 launch the android app, and write your pc ip in the "Robot uri" box. ex) http://<your_pc_ip>:11311/
 
