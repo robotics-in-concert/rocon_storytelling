@@ -3,101 +3,104 @@ rocon_storytelling
 
 Software for our storytelling tool
 
+### For Check StoryTelling Authoring Tool with Turtlebot for ToyWeb
 
+#### launch the turtlebot (grieg) for storytelling.
 
+In turtlebot, open the terminal
 
-### For Check StoryTelling Authoring Tool with Robosem Simuluation
+```
+> cd /home/yujin/demos/demo_201405
+> . .bashrc
+> roslaunch turtlebot_bringup minimal_with_appmanager.launch --screen
+```
 
-- launch the meteor
-```
-> cd <rocon_storytelling package>/storytelling_web
-> meteor
-```
-- launch the [robosem storytelling simulation](https://github.com/robotics-in-concert/rocon_storytelling/blob/hydro-devel/README.md)
+open the new terminal 
 
-- run the rviz robosem simulation for checking the robot motion without real robot.
 ```
-roslaunch robosem_meta view_robot.launch
+> cd /home/yujin/demos/demo_201405
+> . .bashrc
+> rosservice call /turtlebot/start_rapp "name: 'turtlebot_motion/storytelling'"
 ```
-- Now download and install the android app for showing face and doing tts. you can download the apk following url
-```
-http://files.yujinrobot.com/android/apks/sat_app_ver_2.0.apk
-```
-- launch the SATApp and connect the robot ip
-- open the browser(recommended chrome) and connect here url
-```
-http://localhost:3000/main
-```
-- You select the 'prototype' and click the some scene. So, you can chage the motion, tts text, face.
-- After the authoring scene, you select the 'Export' and 'Execution'.
-- Start story, and the robot does tts, motion, expression of emotion.
 
-### Meteor launch
+And then you check following message
+```
+[INFO] [WallTime: 1400635392.129915] Rosbridge WebSocket server started on port 9090
+[INFO] [WallTime: 1400635392.792956] Rosapi started
 
-First, install the meteor
+```
+
+launch storytelling authoring tool web server.
+
+Install the meteor.
+
 ```
 > curl https://install.meteor.com/ | sh
 ```
-And then, launch the story telling authoring server
+ 
+Download amd setting the storytelling web agency for toyweb
+ 
 ```
-> cd <rocon_storytelling package>/storytelling_web
+> git clone https://github.com/robotics-in-concert/rocon_storytelling.git
+> cd rocon_storytelling
+> git checkout toyweb_web_agency
+> cd storytelling_web
 > meteor
 ```
-you can see follow message,
-
+ 
+Open the chrome browser, and connect following URL
+ 
 ```
-[[[[[ ~/rocon/src/rocon_storytelling_web/storytelling_web ]]]]]
-
-=> Meteor 0.7.2 is available. Update this project with 'meteor update'.
-=> Meteor server running on: http://localhost:3000/
-I20140321-14:28:49.159(9)? make execution page: prototype.html
-
+http://localhost:3000/main
+ 
 ```
+ 
+####  Getting Motion List
 
-### Simple test with Motion Player 
-
-First, launch the [robosem storytelling simulation](https://github.com/robotics-in-concert/rocon_storytelling/blob/hydro-devel/README.md)
-and then, launch the meteor and connect following page. 
-
-```
-http://localhost:3000/export/example/test_simple_motion_player.html
-```
-Next, Copy and paste motion list and push the ```Play``` button.
-Lastly, Check the log and open the debug console. (using ```F12```)
-
-### Simple test with Android STA App
-
-First, launch the [robosem storytelling simulation](https://github.com/robotics-in-concert/rocon_storytelling/blob/hydro-devel/README.md)
-and then, launch the meteor and connect following page. 
-
-```
-http://localhost:3000/export/example/test_simple_motion_player.html
-```
-
-Next, download and insall the android app.
-
-```
-http://files.yujinrobot.com/android/apks/sat_app_ver_1.0.apk
-```
-launch the android app, and write your pc ip in the "Robot uri" box. ex) ```http://<your_pc_ip>:11311/```
-
-you check the "cento" image and then, go to the test page, write the tts text and push the play button, sta app speeches your text.
-Also, you can select the displayed image.but the sta app display only image in image list.
-
-
-### Setting the robot motion
-
-- launch the meteor
-```
-> cd <rocon_storytelling package>/storytelling_web
-> meteor
-```
-- launch the [robosem storytelling simulation](https://github.com/robotics-in-concert/rocon_storytelling/blob/hydro-devel/README.md)
-- connect bellow url
+If you use storytelling tool first time, you must obtain the robot motion.
+For getting the motions, connect following URL
 
 ```
 http://localhost:3000/setting
 ```
-- Set the robot ip and the topic name and type about motion list and . 
-- And push the "connect" and add the motion
+And then, set the "Topic" and "ROBOT IP"
+The "Topic" is "/turtlebot/list_motion". and ROBOT IP is "<robot ip>:9090".
+Click the Connect button after setting the topic and robot ip, you can the available motion. 
 
+Select the robot type to turtlebot and add the new motion.
+
+####  Authoring Story 
+
+After getting motion, connect following URL for authoring story. 
+```
+http://localhost:3000/main
+```
+
+1. Select the "toyweb" in Story List for modification toyweb story.
+
+2. Set the Master IP and Robot Type following, and click the save
+
+```
+Master IP: <robot ip>:9090
+Robot Type: turtlebot
+```
+
+you check the changed Launch Info.
+
+3. Click the image, add the action and authorning the motion, face, TTS.
+
+4. Click the Export and Execution.
+
+5. Refresh the Execution page because the saved cache.
+
+####  Launch Android App
+
+Download and insall the android app.
+```
+http://files.yujinrobot.com/android/apks/sat_app_ver_1.0.apk
+```
+launch the android app, and write your pc ip in the "Robot uri" box. ex) http://<your_pc_ip>:11311/
+
+####  Launch Story
+
+Hit the start story after thr launching android app.
