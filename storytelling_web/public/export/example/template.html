@@ -18,9 +18,9 @@
     		PLAYBACK_FINISHED: 3
     };
     var ros = new ROSLIB.Ros();
-
+        
     /*setting info publish topic name*/
-    var motion_pub_topic = "/rocon_robosem/motion_player/motion_playback";
+    var motion_pub_topic = "/turtlebot/motion_playback";
     var face_pub_topic = "/sat_face";
     var tts_pub_topic = "/sat_tts";
     
@@ -30,7 +30,7 @@
     var tts_pub_topic_type = "std_msgs/String";
     
     /*setting info subscriber topic name*/
-    var motion_response_sub_topic = "/rocon_robosem/motion_player/playback_status";
+    var motion_response_sub_topic = "/turtlebot/playback_status";
     var tts_response_sub_topic = "/tts_response";
     var face_response_sub_topic = "/face_response";
     

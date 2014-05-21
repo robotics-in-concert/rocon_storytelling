@@ -203,7 +203,8 @@ if (Meteor.isClient) {
 	};
 	
 	Template.SceneSettingDialog.motions =  function () {
-		var robotcs = Robots.find({robot_name:"robosem"});
+		story = Stories.findOne(Session.get("selected_story"));
+		var robotcs = Robots.find({robot_name:story.robot_type});
 		var motion_list;
 		robotcs.forEach(function(arg){
 			motion_list = arg.motion_list;
@@ -311,7 +312,7 @@ if (Meteor.isServer) {
 	Meteor.startup(function () {	 
 		// code to run on server at startup
 		var fs = Npm.require('fs');
-		var names = ["prototype"];
+		var names = ["prototype","toyweb"];
 		var emotions = ['angry','default','disappoint','fear','happy','sad','shame','surprise','think','wink' ];
 		
 		for( var i = 0 ; i< names.length ; i++){
@@ -323,7 +324,7 @@ if (Meteor.isServer) {
 			for( var i = 0 ; i< emotions.length ; i++){
 				Emotions.insert({
 					name: emotions[i]
-				})
+				});
 			}
 		}
 			

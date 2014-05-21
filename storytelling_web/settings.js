@@ -11,7 +11,7 @@ if (Meteor.isClient) {
        ros.on('connection',function(){
         	console.log("ROS Connected");
         	$('.sat-connect-robot').attr("disabled", "disabled");
-        	var topic_name = $('.sat-motion-list-topic').attr('value');
+        	var topic_name = $('.sat-motion-list-topic')[0].value;
         	var topic_type = $('.sat-motion-list-topic-type').attr('value');
         	set_sub(topic_name, topic_type);
 	    });
@@ -61,20 +61,22 @@ if (Meteor.isClient) {
 	Template.setting_page.events({
 		'click .sat-robot-list': function (event, template) {
 			var selected_robot = template.find("."+"sat-robot-list").value;
-			//Session.set("selected_robot",selected_robot);
-			Session.set("selected_robot","robosem");
+			console.log(selected_robot);
+			Session.set("selected_robot",selected_robot);
 		},
 		'click .sat-connect-robot': function (event, template) {
 			var robot_ip = template.find(".sat-robot-ip").value;
 			ros.connect("ws://"+robot_ip);
 		},
 		'click .sat-substraction-motion': function (event, template) {
-			var robot = Robots.findOne({robot_name:'robosem'});
+			
+			var robot = Robots.findOne({robot_name:Session.get("selected_robot")});
+			console.log('olleh',robot);
 			robot.motion_list.splice(robot.motion_list.indexOf(this),1);
 			Robots.update(robot._id,{$set: {motion_list: robot.motion_list}});
 		},
 		'click .sat-add-motion': function (event, template) {
-			var robot = Robots.findOne({robot_name:'robosem'});
+			var robot = Robots.findOne({robot_name:Session.get("selected_robot")});
 			console.log(this);
 			if(robot.motion_list.indexOf()== -1){
 				robot.motion_list.push(this);
@@ -90,6 +92,10 @@ if(Meteor.isServer){
 		Robots.insert({
 			robot_name:'robosem',
 			motion_list:[{motion_name:'HELLO'},{motion_name:'NO'},{motion_name:'YES'},{motion_name:'NOD'}],
+			});
+		Robots.insert({
+			robot_name:'turtlebot',
+			motion_list:[{motion_name:'FOWARD'},{motion_name:'BACK'},{motion_name:'TURN_RIGHT'},{motion_name:'TURN_LEFT'},{motion_name:'STOP'}],
 			});
 	}
 };
