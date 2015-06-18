@@ -30,6 +30,12 @@ On the real robot
 $ roslaunch robosem_meta rapp_platform.launch
 ```
 
+Note: If an error related with Avahi shows up, (re)start the daemon and try again.
+
+```
+$ sudo service avahi-daemon restart
+```
+
 - Start the robot app (motion player + rosbridge)
 
 Use the new GUI
