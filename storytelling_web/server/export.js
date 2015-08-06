@@ -28,10 +28,12 @@ if (Meteor.isServer) {
 	   var story_name = '';
 	   var execution_path = '';
 	   var scenes = '';
+	   var namespace = '';
 
 	   var story = Stories.findOne(story_id);
 	   master_ip = story.master_ip;
 	   story_name = story.story_name;
+	   namespace = story.namespace;
 	   execution_path = story.execution_path;
 	   scenes = db2scenes(story);
 
@@ -44,7 +46,8 @@ if (Meteor.isServer) {
 	   var html = data.replace("%(SCENE_INFO)",JSON.stringify(scenes))
 	   			.replace("%(STORY_NAME)",story_name)
 	   			.replace("%(MASTER_IP)",master_ip)
-			   .replace("%(IMAGES_SRC_PATH)",li_tags);
+			   .replace("%(IMAGES_SRC_PATH)",li_tags)
+			   .replace("%(NAMESPACE)",namespace);;
 
 	   function db2scenes(story){
 		   if(story){

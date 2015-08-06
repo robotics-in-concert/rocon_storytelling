@@ -65,6 +65,11 @@ if (Meteor.isClient) {
 		var story = Stories.findOne(Session.get("selected_story"));
 		return story.robot_type;
 	};
+
+	Template.settingborad.namespace =  function () {
+		var story = Stories.findOne(Session.get("selected_story"));
+		return story.namespace;
+	};
 	 
 	Template.settingborad.events({
 		'click button.sat-save-setting': function(event,tmpl){
@@ -72,7 +77,8 @@ if (Meteor.isClient) {
 				//var new_story_name = tmpl.find("input.sat-story_name").value;
 				var new_robot_type = tmpl.find("input.sat-robot_type").value;
 				var new_master_ip = tmpl.find("input.sat-master_ip").value;
-			
+				var new_namespace = tmpl.find("input.sat-namespace").value;
+
 				var story = Stories.findOne(Session.get("selected_story"));
 				//action update
 				//var action_cs = Actions.find({story_name:story.story_name});
@@ -87,6 +93,7 @@ if (Meteor.isClient) {
 				//story update
 				Stories.update(story._id, {$set: {robot_type: new_robot_type}});
 				Stories.update(story._id, {$set: {master_ip: new_master_ip}});
+				Stories.update(story._id, {$set: {namespace: new_namespace}});
 				//Stories.update(story._id, {$set: {story_name: new_story_name}});
 			}
 		},
@@ -326,7 +333,6 @@ if (Meteor.isServer) {
 				})
 			}
 		}
-			
 		if (Stories.find().count() === 0){
 			for( var i = 0 ; i< names.length ; i++){
 				Stories.insert({
@@ -335,6 +341,7 @@ if (Meteor.isServer) {
 					execution_path: names[i]+".html",
 					master_ip: "localhost:9090",
 					robot_type: "robosem",
+					namespace: "",
 					});
 				
 				for(var k = 0; k <4 ; k++){
