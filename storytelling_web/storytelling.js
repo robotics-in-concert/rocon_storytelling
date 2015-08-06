@@ -323,7 +323,7 @@ if (Meteor.isServer) {
 		
 		for( var i = 0 ; i< names.length ; i++){
 			console.log("make execution page: " + names[i]+".html");
-			fs.writeFileSync("../../../../../public/export/example/"+names[i]+".html", "");
+//			fs.writeFileSync("../../../../../public/export/example/"+names[i]+".html", "");
 		}
 		
 		if (Emotions.find().count() === 0){
